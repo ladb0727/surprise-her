@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💖 Special Surprise 💖</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+padding:20px;
+}
+
+.card{
+background:white;
+width:100%;
+max-width:650px;
+padding:40px;
+border-radius:25px;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+text-align:center;
+animation:fadeIn .6s ease;
+position:relative;
+}
+
+h1{
+color:#ff4f8b;
+margin-bottom:20px;
+}
+
+p{
+font-size:1.2rem;
+line-height:1.7;
+color:#444;
+margin-bottom:25px;
+}
+
+button{
+border:none;
+padding:14px 24px;
+margin:8px;
+border-radius:50px;
+font-size:1rem;
+cursor:pointer;
+background:#ff4f8b;
+color:white;
+transition:.25s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.big{
+font-size:2.2rem;
+font-weight:bold;
+color:#ff2d75;
+}
+
+.progress{
+font-size:2rem;
+letter-spacing:3px;
+margin:20px 0;
+}
+
+.hidden{
+display:none;
+}
+
+#noBtn{
+position:absolute;
+}
+
+.final-heart{
+font-size:5rem;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+50%{transform:scale(1.15);}
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+top:-10px;
+animation:fall 4s linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(720deg);
+opacity:0;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<script>
+
+const pages = [
+
+`
+<h1>Hey baby!!! 😊</h1>
+<p>I made something special just for you ❤️</p>
+<button onclick="next()">Start</button>
+`,
+
+`
+<h1>Before we begin...</h1>
+<p>I need to verify something 🤔</p>
+<p><b>Who is the most amazing girl in the world?</b></p>
+<button onclick="next()">Me 😌</button>
+<button onclick="next()">Me obviously 💅</button>
+<button onclick="next()">Definitely me 👑</button>
+`,
+
+`
+<h1>Excellent choice.</h1>
+<p>Our system confirms that answer is 100% correct ✅</p>
+<button onclick="next()">Continue</button>
+`,
+
+`
+<h1>Next question...</h1>
+<p>Do you know someone who thinks about you all the time? 🥺</p>
+<button onclick="next()">Maybe 🤭</button>
+<button onclick="next()">Yes 😊</button>
+<button onclick="next()">Of course ❤️</button>
+`,
+
+`
+<h1>Interesting...</h1>
+<p>Do you know someone who gets excited every time you text them? 📱✨</p>
+<button onclick="next()">Maybe...</button>
+<button onclick="next()">I think so</button>
+<button onclick="next()">Yes</button>
+`,
+
+`
+<h1>One more thing...</h1>
+<p>Do you know someone who smiles whenever they see your name pop up? 😊</p>
+<button onclick="next()">Hmm...</button>
+<button onclick="next()">Probably</button>
+<button onclick="next()">Yes</button>
+`,
+
+`
+<h1>Loading results...</h1>
+<div class="progress">██████░░░░ 60%</div>
+<p>Analyzing...</p>
+`,
+
+`
+<h1>Loading results...</h1>
+<div class="progress">██████████ 100%</div>
+<p>Analysis complete.</p>
+<button onclick="next()">Show Results</button>
+`,
+
+`
+<h1>Results indicate...</h1>
+<p>
+❤️ Thinks about you constantly<br><br>
+❤️ Loves talking to you<br><br>
+❤️ Misses you when you're gone<br><br>
+❤️ Thinks you're beautiful<br><br>
+❤️ Feels lucky just to know you
+</p>
+<button onclick="next()">Who is it?</button>
+`,
+
+`
+<h1>It's me, silly 🥰</h1>
+<button onclick="next()">Continue</button>
+`,
+
+`
+<h1>But wait...</h1>
+<p>I have one more question.<br><br>A very important question.</p>
+<button onclick="next()">Continue</button>
+`,
+
+`
+<h1>On a scale from 1–10...</h1>
+<p>How cute am I? 😏</p>
+<button onclick="next()">10</button>
+<button onclick="next()">11</button>
+<button onclick="next()">Infinity ♾️</button>
+`,
+
+`
+<h1>Correct answer detected ✅</h1>
+<button onclick="next()">Continue</button>
+`,
+
+`
+<h1>Would you like to unlock a secret message? 🔐</h1>
+<button onclick="next()">Yes</button>
+<button onclick="next()">Absolutely</button>
+<button onclick="next()">Of course</button>
+`,
+
+`
+<h1>Secret Message ❤️</h1>
+<p>
+Meeting you made my days brighter.<br><br>
+
+Talking to you became my favorite part of every day.<br><br>
+
+And somewhere along the way...<br><br>
+
+I completely fell for you ❤️
+</p>
+<button onclick="next()">Continue</button>
+`,
+
+`
+<h1>Which means...</h1>
+<p>There's only one final question left.</p>
+<button onclick="next()">I'm ready</button>
+`,
+
+`
+<h1 class="big">Will you be my girlfriend? ❤️</h1>
+
+<button onclick="yesAccepted()">YES 💕</button>
+<button onclick="yesAccepted()">YES ABSOLUTELY 💖</button>
+<button onclick="yesAccepted()">YES OF COURSE 🥰</button>
+
+<button id="noBtn">NO 😅</button>
+`,
+
+`
+<h1>🎉🎉🎉</h1>
+<h1>YAYYYYYYY ❤️❤️❤️</h1>
+<p>
+You just made me the happiest person alive 🥹<br><br>
+I can't wait to make more memories with you.<br><br>
+I love you ❤️
+</p>
+<button onclick="next()">One Last Thing</button>
+`,
+
+`
+<h1>Screenshot this page 📸</h1>
+<p>
+Because this is officially the moment you became my girlfriend 💕
+</p>
+<button onclick="next()">❤️ The End ❤️</button>
+`,
+
+`
+<div class="final-heart">💖</div>
+<h1>Thank you for being you.</h1>
+<p>
+Best decision ever.<br><br>
+Love you, girlfriend. 🥰
+</p>
+`
+
+];
+
+let current = 0;
+
+function render(){
+document.getElementById("card").innerHTML = pages[current];
+
+if(current===6){
+setTimeout(()=>{
+current++;
+render();
+},2000);
+}
+
+if(current===16){
+setTimeout(setupNoButton,100);
+}
+}
+
+function next(){
+current++;
+render();
+}
+
+function setupNoButton(){
+const btn=document.getElementById("noBtn");
+
+btn.addEventListener("mouseover",moveButton);
+btn.addEventListener("touchstart",moveButton);
+
+function moveButton(){
+const card=document.getElementById("card");
+
+const maxX=card.clientWidth-120;
+const maxY=card.clientHeight-80;
+
+btn.style.left=Math.random()*maxX+"px";
+btn.style.top=Math.random()*maxY+"px";
+}
+}
+
+function yesAccepted(){
+createConfetti();
+current=17;
+render();
+}
+
+function createConfetti(){
+
+for(let i=0;i<120;i++){
+
+const conf=document.createElement("div");
+
+conf.classList.add("confetti");
+
+conf.style.left=Math.random()*100+"vw";
+
+conf.style.background=
+`hsl(${Math.random()*360},100%,60%)`;
+
+conf.style.width=5+Math.random()*10+"px";
+conf.style.height=5+Math.random()*10+"px";
+
+document.body.appendChild(conf);
+
+setTimeout(()=>{
+conf.remove();
+},4000);
+}
+}
+
+render();
+
+</script>
+
+</body>
+</html>
